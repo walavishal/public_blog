@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Website - Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <a class="navbar-brand" href="/">Blog Website</a>
+           
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Default dropleft button -->
+                   
+                    <div class="btn-group dropleft">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </button>
+                        <div class="dropdown-menu text-center">
+                           <div class="dropdown-item">
+                            <a href="/" style="text-decoration: none;">Home</a>
+                           </div>
+                           <div class="dropdown-item">
+                            {% if 'name' not in request.session %}
+                            <a href="/register" style="text-decoration: none;">Register</a>
+                            {% endif %}
+                           </div>
+                           
+                        </div>
+                        
+                    </div>
+
+                   
+                </ul>
+
+            </div>
+        </nav>
+
+    </header>
+
+    <section class="container card mt-4" style="margin-bottom: 100px;">
+        
+        <form action="/loginvalidate" method="post">
+            {% csrf_token %} 
+            <div class="container">
+                <div class="row justify-content-center mt-5">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Login</h3>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input type="email" name="email" required class="form-control" id="email" placeholder="Enter your email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password:</label>
+                                        <input type="password" name="password" required class="form-control" id="password" placeholder="Enter your password">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Login</button><a href="/register" class="ml-5">Don't have account Register</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Add more blog posts here -->
+        
+    </section>
+   
+   <div class="fixed-bottom">
+   
+    <footer class="bg-dark text-light text-center py-3 mt-4 ">
+       
+        <p>&copy; 2023 Blog Website. All rights reserved.</p>
+    </footer>
+   </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% if dt %}
+    <script>
+    var a=alert("Your email or password is not correct")
+    if(a)
+    {
+        window.location.replace("/login")
+    }
+    </script>
+    {% endif %}
+</body>
+</html>

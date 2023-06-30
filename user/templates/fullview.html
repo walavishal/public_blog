@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Website - Fullview</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <a class="navbar-brand" href="/">Blog Website</a>
+           
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Default dropleft button -->
+                   
+                    <div class="btn-group dropleft">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </button>
+                        <div class="dropdown-menu text-center">
+                           <div class="dropdown-item">
+                            <a href="/" style="text-decoration: none;">Home</a>
+                           </div>
+                           <div class="dropdown-item">
+                            {% if 'name' not in request.session %}
+                            <a href="/register" style="text-decoration: none;">Register</a>
+                            {% endif %}
+                           </div>
+                           <div class="dropdown-item">
+                            {% if 'name' in request.session %}
+                            <a href="/logout" style="text-decoration: none;">Logout</a>
+                            {% else %}
+                            <a href="/login" style="text-decoration: none;">Login</a>
+                            {% endif %}
+                           </div>
+                        </div>
+                        
+                    </div>
+
+                   
+                </ul>
+
+            </div>
+        </nav>
+
+    </header>
+    <div class="row mt-3">
+        <div class="col-10 text-right ">
+            <a href="/createblog"><button class="btn btn-success">+Create blog</button></a>
+        </div>
+        <div class="col-2 text-left ">
+            <a href="/myblogs"><button class="btn btn-warning text-white ">My Blogs</button></a>
+        </div>
+    </div>
+    <section class="container mt-4" style="margin-bottom: 100px;">
+        
+     
+        <div class="card mb-3" >
+            <div class="card-body" >
+                <h3 class="card-title">{{dt.topic}}</h3>
+                <p>{{dt.date}} created by : {{dt.name}}</p>
+                <textarea style="width: 100%;height: 400px;" disabled>{{dt.content}}</textarea>
+               
+                
+            </div>
+        </div>
+        
+       
+
+        <!-- Add more blog posts here -->
+        
+    </section>
+   
+   <div class="fixed-bottom">
+   
+    <footer class="bg-dark text-light text-center py-3 mt-4 ">
+       
+        <p>&copy; 2023 Blog Website. All rights reserved.</p>
+    </footer>
+   </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

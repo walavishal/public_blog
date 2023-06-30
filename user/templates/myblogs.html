@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Website - Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <a class="navbar-brand" href="/">Blog Website</a>
+           
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Default dropleft button -->
+                    {% if 'name' in request.session %}
+                    <h5 class="mr-3 mt-2 text-white">Welcome, {{ request.session.name }}</h5>
+                    {% else %}
+                    <h5 class="mr-3 mt-2 text-white">Welcome, Guest User</h5>
+                    {% endif %}
+                    <div class="btn-group dropleft">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </button>
+                        <div class="dropdown-menu text-center">
+                           <div class="dropdown-item">
+                            <a href="/" style="text-decoration: none;">Home</a>
+                           </div>
+                           
+                           <div class="dropdown-item">
+                            {% if 'name' in request.session %}
+                            <a href="/logout" style="text-decoration: none;">Logout</a>
+                            {% else %}
+                            <a href="/login" style="text-decoration: none;">Login</a>
+                            {% endif %}
+                           </div>
+                        </div>
+                        
+                    </div>
+
+                   
+                </ul>
+
+            </div>
+        </nav>
+
+    </header>
+    <section class="container mt-4" style="margin-bottom: 100px;">
+        <h2>Blogs</h2>
+        {% for x in dt %}
+        <div class="card mb-3" >
+            <div class="card-body" >
+                <h3 class="card-title">{{x.topic}}</h3>
+                <p>{{x.date}} created by : {{x.name}}</p>
+                <p class="card-text">{{x.content|slice:":300"}}....</p>
+                <a href="/viewfull_personal/{{x.id}}" class="btn btn-primary">Read More</a>
+                <a href="/edit/{{x.id}}" class="btn btn-warning">Edit</a>
+                <a  onclick="delet({{x.id}})" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+       
+
+        <!-- Add more blog posts here -->
+        
+    </section>
+   
+   <div class="fixed-bottom">
+    <div class="row">
+        <div class="col-9 text-right">
+            <a href="/createblog"><button class="btn btn-success">+Create blog</button></a>
+        </div>
+        <div class="col-2 text-left">
+            <a href="/myblogs"><button class="btn btn-warning text-white">+My Blogs</button></a>
+        </div>
+    </div>
+    <footer class="bg-dark text-light text-center py-3 mt-4 ">
+       
+        <p>&copy; 2023 Blog Website. All rights reserved.</p>
+    </footer>
+   </div>
+    <script>
+        function delet(a)
+        {
+           c=confirm('Are you sure you want to delete')
+           if(c)
+           {
+            window.location.replace('/delete/'+a) 
+           }
+
+           
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

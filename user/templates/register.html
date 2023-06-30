@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Website - Fullview</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+            <a class="navbar-brand" href="/">Blog Website</a>
+           
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Default dropleft button -->
+                    
+                    <div class="btn-group dropleft">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Menu
+                        </button>
+                        <div class="dropdown-menu text-center">
+                           <div class="dropdown-item">
+                            <a href="/" style="text-decoration: none;">Home</a>
+                           </div>
+                          
+                           <div class="dropdown-item">
+                            {% if 'name' in request.session %}
+                            <a href="/logout" style="text-decoration: none;">Logout</a>
+                            {% else %}
+                            <a href="/login" style="text-decoration: none;">Login</a>
+                            {% endif %}
+                           </div>
+                        </div>
+                        
+                    </div>
+
+                   
+                </ul>
+
+            </div>
+        </nav>
+
+    </header>
+
+    <section class="container mt-4" style="margin-bottom: 100px;">
+        <div class="container">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Register</h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="/registeruser" method="post">
+                                {% csrf_token %} 
+                                <div class="form-group">
+                                    <label for="name">Name:</label>
+                                    <input type="text" required name="name" class="form-control" id="name" placeholder="Enter your name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="email" required name="email" class="form-control" id="email" placeholder="Enter your email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password:</label>
+                                    <input type="password" required name="password" class="form-control" id="password" placeholder="Enter your password">
+                                </div>
+                               
+                                <button type="submit" class="btn btn-primary">Register</button><a href="/login" class="ml-5">         Already have account Login</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+       
+
+        <!-- Add more blog posts here -->
+        
+    </section>
+   
+   <div class="fixed-bottom">
+   
+    <footer class="bg-dark text-light text-center py-3 mt-4 ">
+       
+        <p>&copy; 2023 Blog Website. All rights reserved.</p>
+    </footer>
+   </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% if dt %}
+    <script>
+    var a=alert("Try again Some error occur.Error may also occur if you are trying to register again with same email.")
+    if(a)
+    {
+        window.location.replace("/register")
+    }
+    </script>
+    {% endif %}
+   
+</body>
+</html>
