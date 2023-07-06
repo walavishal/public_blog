@@ -69,11 +69,7 @@
                            <div class="dropdown-item">
                             <a href="/" style="text-decoration: none;">Home</a>
                            </div>
-                           {% if premium %}
-
-                           {% else %}
-                           <a href="/premium" style="text-decoration: none;">Go Premium</a>
-                           {% endif %}
+                           
                            <div class="dropdown-item">
                             {% if 'name' not in request.session %}
                             <a href="/register" style="text-decoration: none;">Register</a>
@@ -106,29 +102,15 @@
         </div>
     </div>
    
-    <section class="container mt-4" style="margin-bottom: 100px;">
+    <section class="container mt-4" style="margin-bottom: 100px;background-color: #e1e1e1;padding: 20px;border-radius: 10px;">
        
-        {% for x in dt %}
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-10"><h3 class="card-title" style="display: inline;">{{x.topic}} </h3></div>
-                    <div class="col-md-2">
-                        {% if premium %}
-
-                        {% else %}
-                        <span style="background-color: rgb(57, 215, 57);color:white;padding:2px 5px 2px 5px;border-radius: 5px; ">Premium</span>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <p>{{x.date}} created by : {{x.name}}</p>
-                <p class="card-text">{{x.content|slice:":300"}}....</p>
-                <a href="/viewfull/{{x.id}}" class="btn btn-primary">Read More</a>
-            </div>
-        </div>
-        {% endfor %}
-
+      
+        <h2>Hello {{ request.session.name }}</h2>
+        <p>Your account is not paid account, So you can't read more than 10 blogs. </p>
+        <p>And also if you have not read 10 blog in 30-days(account create date + 30 days) than your free 10 blogs will expire. </p>
+        <p>Our one time premium plan provide lifetime access to all blogs.</p>
+        <p>Premium plan cost only ₹ 399</p>
+        <span class="text-center"><button class="btn btn-success" id="checkout-button">Go Premium</button></span>
 
         <!-- Add more blog posts here -->
 

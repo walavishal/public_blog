@@ -69,11 +69,6 @@
                            <div class="dropdown-item">
                             <a href="/" style="text-decoration: none;">Home</a>
                            </div>
-                           {% if premium %}
-
-                           {% else %}
-                           <a href="/premium" style="text-decoration: none;">Go Premium</a>
-                           {% endif %}
                            <div class="dropdown-item">
                             {% if 'name' not in request.session %}
                             <a href="/register" style="text-decoration: none;">Register</a>
@@ -107,30 +102,19 @@
     </div>
    
     <section class="container mt-4" style="margin-bottom: 100px;">
-       
-        {% for x in dt %}
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-10"><h3 class="card-title" style="display: inline;">{{x.topic}} </h3></div>
-                    <div class="col-md-2">
-                        {% if premium %}
-
-                        {% else %}
-                        <span style="background-color: rgb(57, 215, 57);color:white;padding:2px 5px 2px 5px;border-radius: 5px; ">Premium</span>
-                        {% endif %}
+        <div class="container">
+            <div class="row ">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card mt-5">
+                        <div class="card-body text-center" style="background-color:#fefefe;">
+                            <h3 class="card-title">Payment Fail 😞</h3>
+                            <p class="card-text">Please try again after 1 hour</p>
+                            <a href="/" class="btn btn-danger">Go to Home</a>
+                        </div>
                     </div>
                 </div>
-                
-                <p>{{x.date}} created by : {{x.name}}</p>
-                <p class="card-text">{{x.content|slice:":300"}}....</p>
-                <a href="/viewfull/{{x.id}}" class="btn btn-primary">Read More</a>
             </div>
         </div>
-        {% endfor %}
-
-
-        <!-- Add more blog posts here -->
 
     </section>
 
@@ -141,68 +125,11 @@
             <p>&copy; 2023 Blog Website. All rights reserved.</p>
         </footer>
     </div>
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2>Hello {{ request.session.name }}</h2>
-          <p>Your account is not paid account, So you can't read more than 10 blogs. </p>
-          <p>And also if you have not read 10 blog in 30-days(account create date + 30 days) than your free 10 blogs will expire. </p>
-          <p>Our one time premium plan provide lifetime access to all blogs.</p>
-          <p>Premium plan cost only ₹ 399</p>
-          <span class="text-center"><button class="btn btn-success" id="checkout-button">Go Premium</button></span>
-        </div>
-      </div>
+   
       
       
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-<script>
-    // Open the modal
-function openmodel() {
-  document.getElementById("myModal").style.display = "block";
-}
-{% if a %}
-    openmodel()
-{% endif %}
-// Close the modal
-document.getElementsByClassName("close")[0].onclick = function() {
-  document.getElementById("myModal").style.display = "none";
-  window.location.replace('/')
-}
 
-</script>
-
-
-
-<script type="text/javascript">
-    // Create an instance of the Stripe object with your publishable API key
-    var stripe = Stripe('pk_test_51NQPhxSCejTyNzmdmX1JRwJ2H4R91FJB4h3Bt98gQR4uJMG9ZhwNruhi5letSkauRMEP5IbvJKnqLiImvqbmaCqp00ww06oKxH');
-    var checkoutButton = document.getElementById('checkout-button');
-   
-    checkoutButton.addEventListener('click', function() {
-    // Create a new Checkout Session using the server-side endpoint you
-    // created in step 3.
-    fetch('/create-checkout-session', {
-    method: 'POST',
-    })
-    .then(function(response) {
-    return response.json();
-    })
-    .then(function(session) {
-    return stripe.redirectToCheckout({ sessionId: session.id });
-    })
-    .then(function(result) {
-    // If `redirectToCheckout` fails due to a browser or network
-    // error, you should display the localized error message to your
-    // customer using `error.message`.
-    if (result.error) {
-    alert(result.error.message);
-    }
-    })
-    .catch(function(error) {
-    console.error('Error:', error);
-    });
-    });
-    </script>
 </html>

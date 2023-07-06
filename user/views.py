@@ -1,12 +1,26 @@
 from django.shortcuts import render,redirect
 from .models import Myblog,usr
+from datetime import datetime
+import stripe
+from django.conf import settings
+from django.http import JsonResponse,HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
+stripe.api_key=settings.STRIPE_SECRET_KEY
 
 # Create your views here.
 
 
 def home(request):
     data=Myblog.objects.all().order_by('-date','-time')
-    return render(request,'home.html',{'dt':data})
+    if 'email' in request.session:
+        p=usr.objects.get(email=request.session['email'])
+        premium=p.premium
+    else:
+        premium=False
+    
+    return render(request,'home.html',{'dt':data,'premium':premium})
 
 def createblog(request):
     if 'email' in request.session:
@@ -29,8 +43,14 @@ def saveblog(request):
 
 def viewfullblog(request,id):
     if 'email' in request.session:
-        data=Myblog.objects.get(id=id)
-        return render(request,'fullview.html',{'dt':data})
+        d=usr.objects.get(email=request.session['email'])
+        if (d.blog_view_count<10 and d.join_date<=datetime.now().date()<=d.expiry_date) or d.premium==True:
+            d.blog_view_count=d.blog_view_count+1
+            d.save()
+            data=Myblog.objects.get(id=id)
+            return render(request,'fullview.html',{'dt':data})
+        else:
+            return render(request,'home.html',{'a':1})    
     else:
         return render(request,'login.html')
    
@@ -116,3 +136,90 @@ def viewpersonal(request,id):
         return render(request,'viewfull_personal.html',{'dt':data})
     else:
         return render(request,'login.html')
+    
+
+def checkout(request):
+    return render(request,'checkout.html')
+
+
+
+
+#****************below code for payment***************
+
+@csrf_exempt
+def create_checkout_session(request):
+    session = stripe.checkout.Session.create(
+    payment_method_types=['card'],
+    line_items=[{
+    'price_data': {
+    'currency': 'inr',
+    'product_data': {
+    'name': 'Premium Blog',
+    },
+    'unit_amount': 39900,
+    },
+    'quantity': 1,
+    }],
+    metadata={
+        'email':request.session['email']
+    },
+    mode='payment',
+    success_url='http://127.0.0.1:8000/success',
+    cancel_url='http://127.0.0.1:8000/cancel',
+    )
+    # print(session)
+   
+    return JsonResponse({'id': session.id})
+
+def success(request):
+    if 'email' in request.session:
+        return render(request,'success.html')
+    else:
+        return redirect('/login')
+    
+
+def fail(request):
+    if 'email' in request.session:
+        return render(request,'fail.html')
+    else:
+        return redirect('/login')
+    
+
+def premium(request):
+    if 'email' in request.session:
+        return render(request,'premium.html')
+    else:
+        return redirect('/login')
+    
+
+@csrf_exempt
+def webhook(request):
+    print("Webhook")
+    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+        payload, sig_header, endpoint_secret
+    )
+    except ValueError as e:
+    # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+    # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+    #NEW CODE
+        session = event['data']['object']
+        email=session["metadata"]["email"]
+    #Updating order
+    data=usr.objects.get(email=email)
+    data.premium=True
+    data.save()
+       
+    print('helo hoob')
+    return HttpResponse(status=200)

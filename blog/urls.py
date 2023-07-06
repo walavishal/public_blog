@@ -33,6 +33,11 @@ urlpatterns = [
     path('edit/<int:id>',views.edit),
     path('editvalidate',views.editvalidate),
     path('delete/<int:id>',views.delete),
-    path('viewfull_personal/<int:id>',views.viewpersonal)
+    path('viewfull_personal/<int:id>',views.viewpersonal),
+    path('create-checkout-session',views.create_checkout_session),
+    path('success',views.success),
+    path('fail',views.fail),
+    path('premium',views.premium),
+    path('webhooks',views.webhook)
 
 ]
