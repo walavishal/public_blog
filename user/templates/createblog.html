@@ -51,11 +51,15 @@
 
     <section class="container card mt-4" style="margin-bottom: 100px;">
         <h2>Latest Blog Posts</h2>
-        <form action="/saveblog" method="post">
+        <form action="/saveblog" method="post" enctype="multipart/form-data">
             {% csrf_token %} 
             <div class="form-group">
                 <label for="topic">Topic:</label>
                 <input type="text" class="form-control" name="topic" id="topic" placeholder="Enter blog topic">
+            </div>
+            <div class="form-group">
+                <label for="topic">Topic:</label>
+                <input type="file" class="form-control" name="image" id="image" required>
             </div>
             <div class="form-group">
                 <label for="content">Content:</label>

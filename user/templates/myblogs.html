@@ -56,9 +56,9 @@
                 <h3 class="card-title">{{x.topic}}</h3>
                 <p>{{x.date}} created by : {{x.name}}</p>
                 <p class="card-text">{{x.content|slice:":300"}}....</p>
-                <a href="/viewfull_personal/{{x.id}}" class="btn btn-primary">Read More</a>
-                <a href="/edit/{{x.id}}" class="btn btn-warning">Edit</a>
-                <a  onclick="delet({{x.id}})" class="btn btn-danger">Delete</a>
+                <a href="/viewfull_personal/{{x.blog_id}}" class="btn btn-primary">Read More</a>
+                <a href="/edit/{{x.blog_id}}" class="btn btn-warning">Edit</a>
+                <a  onclick="delet({{x.blog_id}})" class="btn btn-danger">Delete</a>
             </div>
         </div>
         {% endfor %}

@@ -51,12 +51,16 @@
 
     <section class="container card mt-4" style="margin-bottom: 100px;">
         <h2>Edit Blog</h2>
-        <form action="/editvalidate" method="post">
+        <form action="/editvalidate" method="post" enctype="multipart/form-data">
             {% csrf_token %} 
             <div class="form-group">
                 <label for="topic">Topic:</label>
                 <input type="text" class="form-control" name="topic" id="topic" value="{{ dt.topic }}" >
-                <input type="hidden" class="form-control" name="id" id="topic" value="{{ dt.id }}" >
+                <input type="hidden" class="form-control" name="id" id="topic" value="{{ dt.blog_id }}" >
+            </div>
+            <div class="form-group">
+                <label for="topic">Topic:</label>
+                <input type="file" class="form-control" name="image" id="image" required>
             </div>
             <div class="form-group">
                 <label for="content">Content:</label>

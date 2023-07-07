@@ -125,6 +125,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STRIPE_PUBLIC_KEY = 'pk_test_51NQPhxSCejTyNzmdmX1JRwJ2H4R91FJB4h3Bt98gQR4uJMG9ZhwNruhi5letSkauRMEP5IbvJKnqLiImvqbmaCqp00ww06oKxH'
-STRIPE_SECRET_KEY = 'sk_test_51NQPhxSCejTyNzmd2nyOuFJHfJLwpZ4bgLzJjpRDLSFlkyKvSAO55Z5L8kqzYz1HRVwuRvH3TNhrPKU9qh6zDJNX00zvvmfBy3'
-STRIPE_ENDPOINT_SECRET='whsec_2942ef5da088816a5bd0272a6f35627fcd50fe8563fc27755c3c107764f1d35c'
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+

@@ -63,9 +63,10 @@
             <div class="card-body" >
                 <h3 class="card-title">{{dt.topic}}</h3>
                 <p>{{dt.date}} created by : {{dt.name}}</p>
-                <textarea style="width: 100%;height: 400px;" disabled>{{dt.content}}</textarea>
-                <a href="/edit/{{dt.id}}" class="btn btn-warning mt-2">Edit</a>
-                <a onclick="delet({{dt.id}})" class="btn btn-danger mt-23">Delete</a>
+               
+                <pre style="width: 100%;height: 400px;" disabled><p class="text-center"> <img src="../../media/{{dt.image}}" height="150px" alt=""></p><br><br>{{dt.content}}</pre>
+                <a href="/edit/{{dt.blog_id}}" class="btn btn-warning mt-2">Edit</a>
+                <a onclick="delet({{dt.blog_id}})" class="btn btn-danger mt-2">Delete</a>
                 
             </div>
         </div>

@@ -1,13 +1,17 @@
 from django.shortcuts import render,redirect
-from .models import Myblog,usr
+from .models import Myblog,usr,image
 from datetime import datetime
 import stripe
 from django.conf import settings
 from django.http import JsonResponse,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
-stripe.api_key=settings.STRIPE_SECRET_KEY
+stripe.api_key=os.getenv('STRIPE_SECRETKEY')
 
 # Create your views here.
 
@@ -34,11 +38,23 @@ def saveblog(request):
         content=request.POST.get('content')
         email=request.session['email']
         name=request.session['name']
-        blog=Myblog(topic=topic,content=content,email=email,name=name)
+        imag=request.FILES['image']
+
+        x=datetime.now()
+
+        
+        x=str(x.year)+str(x.month)+str(x.day)+str(x.hour)+str(x.minute)+str(x.second)
+        blog=Myblog(blog_id=x,topic=topic,content=content,email=email,name=name)
+        
         if blog.save():
             return redirect("/createblog")
         else:
+            imag.name=x+imag.name
+            blog=Myblog.objects.get(blog_id=x)
+            img=image(blog_id=blog,image_path=imag)
+            img.save()
             return redirect("/")
+            
         
 
 def viewfullblog(request,id):
@@ -47,7 +63,9 @@ def viewfullblog(request,id):
         if (d.blog_view_count<10 and d.join_date<=datetime.now().date()<=d.expiry_date) or d.premium==True:
             d.blog_view_count=d.blog_view_count+1
             d.save()
-            data=Myblog.objects.get(id=id)
+            data=Myblog.objects.get(blog_id=id)
+            a=image.objects.get(blog_id=id)
+            data.image_path=a.image_path#this will not prmanent add image_path to myblog
             return render(request,'fullview.html',{'dt':data})
         else:
             return render(request,'home.html',{'a':1})    
@@ -100,9 +118,9 @@ def myblogs(request):
         return redirect('/login')
     
 def edit(request,id):
-    ct=Myblog.objects.filter(email=request.session['email'],id=id).count()
+    ct=Myblog.objects.filter(email=request.session['email'],blog_id=id).count()
     if 'email' in request.session and ct==1:
-        data=Myblog.objects.filter(id=id,email=request.session['email'])
+        data=Myblog.objects.filter(blog_id=id,email=request.session['email'])
         return render(request,'edit.html',{'dt':data[0]})#above return list of object so we only need 1
     else:
         return redirect('/login')
@@ -111,28 +129,40 @@ def editvalidate(request):
     id=request.POST.get('id')
     topic=request.POST.get('topic')
     content=request.POST.get('content')
-    ct=Myblog.objects.filter(email=request.session['email'],id=id).count()
+    imag=request.FILES['image']
+    ct=Myblog.objects.filter(email=request.session['email'],blog_id=id).count()
      
     if ct ==1:
-        data=Myblog.objects.get(email=request.session['email'],id=id)
+        data=Myblog.objects.get(email=request.session['email'],blog_id=id)
         data.topic=topic
         data.content=content
         data.save()
+        b=image.objects.get(blog_id=data)
+        b.delete()
+        x=datetime.now()
+        x=str(x.year)+str(x.month)+str(x.day)+str(x.hour)+str(x.minute)+str(x.second)
+        imag.name=x+imag.name
+        img=image(blog_id=data,image_path=imag)
+        img.save()
         return redirect('/myblogs')
     else:
         return render(request,'edit.html',{'err':1})
 def delete(request,id):
-    ct=Myblog.objects.filter(email=request.session['email'],id=id).count()
+    ct=Myblog.objects.filter(email=request.session['email'],blog_id=id).count()
      
     if ct ==1:
-        data=Myblog.objects.get(email=request.session['email'],id=id)
+        data=Myblog.objects.get(email=request.session['email'],blog_id=id)
+        b=image.objects.get(blog_id=data)
+        b.delete()# first image object will be deleted and than blog  to delete image from physical location we have override delete method o image object
         data.delete()
         return redirect('/myblogs')
     else:
         return redirect('/myblogs')
 def viewpersonal(request,id):
     if 'email' in request.session:
-        data=Myblog.objects.get(id=id)
+        data=Myblog.objects.get(blog_id=id)
+        img=image.objects.get(blog_id=data)
+        data.image=img.image_path
         return render(request,'viewfull_personal.html',{'dt':data})
     else:
         return render(request,'login.html')
@@ -194,8 +224,8 @@ def premium(request):
 
 @csrf_exempt
 def webhook(request):
-    print("Webhook")
-    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+   
+    endpoint_secret = os.getenv('STRIPE_ENDPOINT_SECRET')
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
@@ -213,13 +243,15 @@ def webhook(request):
 
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-    #NEW CODE
+   
         session = event['data']['object']
         email=session["metadata"]["email"]
-    #Updating order
-    data=usr.objects.get(email=email)
-    data.premium=True
-    data.save()
+    
+    if session['payment_status']=='paid':
+        data=usr.objects.get(email=email)
+        data.premium=True
+        data.save()
+    
        
-    print('helo hoob')
+   
     return HttpResponse(status=200)
