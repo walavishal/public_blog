@@ -11,7 +11,7 @@ import os
 load_dotenv()
 
 
-stripe.api_key=os.getenv('STRIPE_SECRETKEY')
+stripe.api_key=os.getenv('STRIPE_SECRET_KEY')
 
 # Create your views here.
 
