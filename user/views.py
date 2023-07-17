@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from .models import Myblog,usr,image
-from datetime import datetime
+from datetime import datetime,timedelta
 import stripe
 from django.conf import settings
 from django.http import JsonResponse,HttpResponse
@@ -18,13 +18,20 @@ stripe.api_key=os.getenv('STRIPE_SECRET_KEY')
 
 def home(request):
     data=Myblog.objects.all().order_by('-date','-time')
+    
     if 'email' in request.session:
         p=usr.objects.get(email=request.session['email'])
         premium=p.premium
     else:
         premium=False
+    response = HttpResponse(render(request,'home.html',{'dt':data,'premium':premium}))  
+    if 'count' in request.COOKIES:
+        pass
+    else:
+        response.set_cookie('count',0)  
+        response.set_cookie('c_date',datetime.now().date())
     
-    return render(request,'home.html',{'dt':data,'premium':premium})
+    return response
 
 def createblog(request):
     if 'email' in request.session:
@@ -58,6 +65,11 @@ def saveblog(request):
         
 
 def viewfullblog(request,id):
+    count=int(request.COOKIES['count'])
+    c_date=datetime.strptime(request.COOKIES['c_date'], "%Y-%m-%d").date()
+    
+
+   
     if 'email' in request.session:
         d=usr.objects.get(email=request.session['email'])
         if (d.blog_view_count<10 and d.join_date<=datetime.now().date()<=d.expiry_date) or d.premium==True:
@@ -70,7 +82,16 @@ def viewfullblog(request,id):
         else:
             return render(request,'home.html',{'a':1})    
     else:
-        return render(request,'login.html')
+        if count<=10 and (c_date<=datetime.now().date()<=(c_date+timedelta(days=30))):
+            data=Myblog.objects.get(blog_id=id)
+            a=image.objects.get(blog_id=id)
+            data.image_path=a.image_path#this will not prmanent add image_path to myblog
+            response = HttpResponse(render(request,'fullview.html',{'dt':data}))
+            response.set_cookie('count',count+1)
+            return response
+        else:
+             return render(request,'home.html',{'b':1}) 
+        
    
 
 def login(request):

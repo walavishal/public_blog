@@ -152,6 +152,17 @@
           <span class="text-center"><button class="btn btn-success" id="checkout-button">Go Premium</button></span>
         </div>
       </div>
+      <div id="myModal2" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Hello {{ request.session.name }}</h2>
+          <p>You have not created account, So you can't read more than 10 blogs. </p>
+          <p>And also if you have not read 10 blog in 30-days(first website access date + 30 days) than your free 10 blogs will expire. </p>
+          <p>Once you create account you can acces more 10 blogs and after that you have to purchase our premium</p>
+          <p>Premium plan cost only ₹ 399</p>
+          <span class="text-center"><button class="btn btn-success" onclick=create()>Create Account</button></span>
+        </div>
+      </div>
       
       
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -169,6 +180,21 @@ function openmodel() {
 document.getElementsByClassName("close")[0].onclick = function() {
   document.getElementById("myModal").style.display = "none";
   window.location.replace('/')
+}
+function openmodel1() {
+  document.getElementById("myModal2").style.display = "block";
+}
+{% if b %}
+    openmodel1()
+{% endif %}
+// Close the modal
+document.getElementsByClassName("close")[1].onclick = function() {
+  document.getElementById("myModal").style.display = "none";
+  window.location.replace('/')
+}
+function create()
+{
+    window.location.replace('/register')
 }
 
 </script>
